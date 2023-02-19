@@ -15,11 +15,10 @@ describe("Testing Uniswap V2 Swap", ()=>{
         TestSwapDeploy = await TestSwap.deploy();
         TestSwapDeploy.deployed();
     });
-    it("Testing Swap token",async()=>{
+    it("Testing transfer token function",async()=>{
         const amountIn = 1n **18n;
         await weth.connect(account).deposit({value:amountIn});
         await weth.connect(account).approve(TestSwapDeploy.address, amountIn);
-
         expect(await weth.balanceOf(account.address)).to.equals((1n**18n));
     });
     it("Checking the getAmountOutMin function",async()=>{
@@ -27,8 +26,16 @@ describe("Testing Uniswap V2 Swap", ()=>{
         await weth.connect(account).deposit({value:amountIn});
         await weth.connect(account).approve(TestSwapDeploy.address, amountIn);
         const amountOutMin = await TestSwapDeploy.getAmountOutmin(WETH, DAI, amountIn);
-        const balanceDai = await dai.balanceOf(account.address);
-        await TestSwapDeploy.swap(WETH,DAI,amountIn,amountOutMin,account.address);
-        //(await dai.balanceOf(account.address)).to.equals((BigNumber(amountOutMin + balanceDai)))
+        console.log(amountOutMin);
+
+    })
+    it("Swap Token checking the balance again", async()=>{
+        const amountIn = 1n ** 18n;
+        await weth.connect(account).deposit({value:amountIn});
+        await weth.connect(account).approve(TestSwapDeploy.address, amountIn);
+        const amountOutMin = await TestSwapDeploy.getAmountOutmin(WETH, DAI, amountIn);
+        const daiAmountInAccount = await dai.balanceOf(account.address);
+        await TestSwapDeploy.swap(WETH,DAI,amountIn, amountOutMin,account.address);
+        expect(await dai.balanceOf(account.address)).to.equals(BigInt(amountOutMin)+BigInt(daiAmountInAccount));
     })
 })
