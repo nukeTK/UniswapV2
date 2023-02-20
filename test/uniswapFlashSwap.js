@@ -3,12 +3,14 @@ const { ethers } = require("hardhat");
 
 describe("Testing uniswap flash Swap", () => {
 
-  let DAI,daiToken, flashSwap, flashSwapDeploy, account;
+  let DAI,daiToken, flashSwap, flashSwapDeploy, signer;
   
   before("Getting Values", async () => {
     DAI = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
     daiToken = await ethers.getContractAt("IERC20", DAI);
-        
+
+    signer =await ethers.getSigner();
+    
     flashSwap = await ethers.getContractFactory("TestUniswapFlashSwap");
     flashSwapDeploy = await flashSwap.deploy();
     flashSwapDeploy.deployed();
@@ -23,6 +25,6 @@ describe("Testing uniswap flash Swap", () => {
     //checking the balance 
     console.log(await daiToken.balanceOf(flashSwapDeploy.address));
     //Implementing the flash swap function
-    await flashSwapDeploy.connect(account).testFlashSwap(DAI,amount);
+    await flashSwapDeploy.connect(signer).testFlashSwap(DAI,amount);
   });
 });

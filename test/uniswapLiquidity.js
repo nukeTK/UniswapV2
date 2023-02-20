@@ -18,7 +18,7 @@ describe("Testing Liquidity", () => {
     liquidityDeploy = await liquidity.deploy();
     await liquidityDeploy.deployed();
   });
-  it("Add liquidity into the pool, Using WETH & DAI Tokens", async () => {
+  it("Add & Remove liquidity into the pool, Using WETH & DAI Tokens", async () => {
     //Checking the balance of DAI token
     const tokenBal = await daiToken.balanceOf(signer.address);
     //checking token must be greater than Random Amount
@@ -33,13 +33,13 @@ describe("Testing Liquidity", () => {
     //Approve the tokens so that liquidity contract used on behalf of signer
     daiToken.connect(signer).approve(liquidityDeploy.address, amount);
     wethToken.connect(signer).approve(liquidityDeploy.address, amount);
-
+    console.log("----------------Add Liquidity-----------------")
     //Add Liquidity
-    await liquidityDeploy.connect(signer).addLiquidity(
-      DAI,
-      WETH,
-      tokenBal,
-      amount
-    );
+    await liquidityDeploy
+      .connect(signer)
+      .addLiquidity(DAI, WETH, tokenBal, amount);
+    console.log("----------------Remove Liquidity-----------------")
+    //Remove Liquidity
+    await liquidityDeploy.connect(signer).removeLiquidity(DAI, WETH);
   });
 });

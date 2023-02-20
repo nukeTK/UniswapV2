@@ -45,5 +45,24 @@ contract TestUniswapLiquidity {
         console.log("LP Token Get By User:", liquidity);
     }
 
+    function removeLiquidity(address _tokenA, address _tokenB) external {
+        
+        address pair = IUniswapV2Factory(FACTORY).getPair(_tokenA, _tokenB);
 
+        uint256 liquidity = IERC20(pair).balanceOf(address(this));
+        IERC20(pair).approve(ROUTER, liquidity);
+
+        (uint256 amountA, uint256 amountB) = IUniswapV2Router(ROUTER)
+            .removeLiquidity(
+                _tokenA,
+                _tokenB,
+                liquidity,
+                1,
+                1,
+                address(this),
+                block.timestamp
+            );
+        console.log("Amount of Token A", amountA);
+        console.log("Amount of Token B", amountB);
+    }
 }
