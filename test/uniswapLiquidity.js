@@ -30,7 +30,7 @@ describe("Testing Liquidity", () => {
     const wethBal = await wethToken.balanceOf(signer.address);
     expect(wethBal).to.equals(amount);
 
-    //Approved of the tokens so that liquidity contract used on behalf of signer
+    //Approve the tokens so that liquidity contract used on behalf of signer
     daiToken.connect(signer).approve(liquidityDeploy.address, amount);
     wethToken.connect(signer).approve(liquidityDeploy.address, amount);
 
