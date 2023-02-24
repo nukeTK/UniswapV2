@@ -16,13 +16,13 @@ describe("Testing Uniswap V2 Swap", ()=>{
         TestSwapDeploy.deployed();
     });
     it("Testing transfer token function",async()=>{
-        const amountIn = 1n **18n;
+        const amountIn = 10n **18n;
         await weth.connect(account).deposit({value:amountIn});
         await weth.connect(account).approve(TestSwapDeploy.address, amountIn);
-        expect(await weth.balanceOf(account.address)).to.equals((1n**18n));
+        expect(await weth.balanceOf(account.address)).to.equals((10n**18n));
     });
     it("Checking the getAmountOutMin function",async()=>{
-        const amountIn = 1n ** 18n;
+        const amountIn = 10n ** 18n;
         await weth.connect(account).deposit({value:amountIn});
         await weth.connect(account).approve(TestSwapDeploy.address, amountIn);
         const amountOutMin = await TestSwapDeploy.getAmountOutmin(WETH, DAI, amountIn);
@@ -30,7 +30,7 @@ describe("Testing Uniswap V2 Swap", ()=>{
 
     })
     it("Swap Token checking the balance again", async()=>{
-        const amountIn = 1n ** 18n;
+        const amountIn = 10n ** 18n;
         await weth.connect(account).deposit({value:amountIn});
         await weth.connect(account).approve(TestSwapDeploy.address, amountIn);
         const amountOutMin = await TestSwapDeploy.getAmountOutmin(WETH, DAI, amountIn);
