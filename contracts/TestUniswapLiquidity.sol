@@ -2,7 +2,7 @@
 pragma solidity ^0.8;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./interface/Uniswap.sol";
+import "./interfaces/Uniswap.sol";
 
 import "hardhat/console.sol";
 
