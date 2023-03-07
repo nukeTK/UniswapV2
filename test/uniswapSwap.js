@@ -95,7 +95,7 @@ describe("Testing Uniswap V2 Swap", () => {
   });
 
   /* Getting wrong value working on this  
- it("Checking the getAmountInMin function",async()=>{
+  it("Checking the getAmountInMin function",async()=>{
     const amountOut = BigNumber.from(10).pow(18);
     const amountInMin = await TestSwapDeploy.getAmountInMin(
       DAI,
@@ -106,5 +106,5 @@ describe("Testing Uniswap V2 Swap", () => {
     console.log(`Amount Of DAI Required for 1 ETH:${amountInMin}`);
   }); */
 
-  
+
 });
