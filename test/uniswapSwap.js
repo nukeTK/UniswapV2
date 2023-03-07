@@ -1,4 +1,5 @@
 const { assert, expect } = require("chai");
+const { BigNumber } = require("ethers");
 const { ethers } = require("hardhat");
 
 describe("Testing Uniswap V2 Swap", () => {
@@ -51,19 +52,19 @@ describe("Testing Uniswap V2 Swap", () => {
 
   it("Checking the getAmountOutMin function", async () => {
     const amountIn = 10n ** 18n;
-    await weth.connect(account).deposit({ value: amountIn });
-    await weth.connect(account).approve(TestSwapDeploy.address, amountIn);
     const amountOutMin = await TestSwapDeploy.getAmountOutMin(
       WETH,
       DAI,
       amountIn
     );
+    expect(amountOutMin).to.not.eq(0);
     console.log("\nCHECKING EXPECTED PRICE");
     console.log(`Amount Of DAI Received:${amountOutMin / 1e18}`);
+    console.log("--------END------------\n");
   });
 
   it("Swap Token checking the balance again", async () => {
-    const amountIn = 10n ** 18n;
+    const amountIn = BigNumber.from(10).pow(18);
     await weth.connect(account).deposit({ value: amountIn });
     await weth.connect(account).approve(TestSwapDeploy.address, amountIn);
     const amountOutMin = await TestSwapDeploy.getAmountOutMin(
@@ -71,7 +72,6 @@ describe("Testing Uniswap V2 Swap", () => {
       DAI,
       amountIn
     );
-
     const daiAmountInAccount = await dai.balanceOf(account.address);
     await TestSwapDeploy.swap(
       WETH,
@@ -93,4 +93,18 @@ describe("Testing Uniswap V2 Swap", () => {
     expect(reserveInOut.reserveIn).to.not.eq(AddressZero);
     expect(reserveInOut.reserveOut).to.not.eq(AddressZero);
   });
+
+  /* Getting wrong value working on this  
+ it("Checking the getAmountInMin function",async()=>{
+    const amountOut = BigNumber.from(10).pow(18);
+    const amountInMin = await TestSwapDeploy.getAmountInMin(
+      DAI,
+      WETH,
+      amountOut
+    );
+    console.log("\nCHECKING EXPECTED PRICE IN");
+    console.log(`Amount Of DAI Required for 1 ETH:${amountInMin}`);
+  }); */
+
+  
 });

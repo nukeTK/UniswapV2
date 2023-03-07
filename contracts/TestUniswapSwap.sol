@@ -8,9 +8,6 @@ contract TestUniswapSwap {
         0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D;
     address private constant WETH = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
 
-    address private constant UNISWAP_V2_FACTORY =
-        0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f;
-
     receive() external payable {}
 
     function swap(
@@ -80,18 +77,18 @@ contract TestUniswapSwap {
 
         if (WETH == _tokenIn || WETH == _tokenOut) {
             path = new address[](2);
-            path[0] = _tokenIn;
-            path[1] = _tokenOut;
+            path[0] = _tokenOut;
+            path[1] = _tokenIn;
         } else {
             path = new address[](3);
-            path[0] = _tokenIn;
+            path[0] = _tokenOut;
             path[1] = WETH;
-            path[2] = _tokenOut;
+            path[2] = _tokenIn;
         }
 
         //same length as path
-        uint256[] memory amountOutMins = IUniswapV2Router(UNISWAP_V2_ROUTER)
+        uint256[] memory amountInMax = IUniswapV2Router(UNISWAP_V2_ROUTER)
             .getAmountsIn(_amountOut, path);
-        return amountOutMins[path.length - 1];
+        return amountInMax[path.length - 1];
     }
 }
