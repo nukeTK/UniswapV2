@@ -93,18 +93,4 @@ describe("Testing Uniswap V2 Swap", () => {
     expect(reserveInOut.reserveIn).to.not.eq(AddressZero);
     expect(reserveInOut.reserveOut).to.not.eq(AddressZero);
   });
-
-  /* Getting wrong value working on this  
-  it("Checking the getAmountInMin function",async()=>{
-    const amountOut = BigNumber.from(10).pow(18);
-    const amountInMin = await TestSwapDeploy.getAmountInMin(
-      DAI,
-      WETH,
-      amountOut
-    );
-    console.log("\nCHECKING EXPECTED PRICE IN");
-    console.log(`Amount Of DAI Required for 1 ETH:${amountInMin}`);
-  }); */
-
-
 });
