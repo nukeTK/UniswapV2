@@ -42,7 +42,7 @@ contract TestUniswapSwap {
     }
 
     // **** LIBRARY FUNCTIONS ****
-    
+
     function getAmountOutMin(
         address _tokenIn,
         address _tokenOut,
@@ -66,7 +66,6 @@ contract TestUniswapSwap {
             .getAmountsOut(_amountIn, path);
         return amountOutMins[path.length - 1];
     }
-
 
     function getAmountInMin(
         address _tokenIn,
@@ -92,4 +91,29 @@ contract TestUniswapSwap {
         return amountInMax[path.length - 1];
     }
 
+    function getAmountOutMax(
+        uint _amountIn,
+        uint _reserveIn,
+        uint _reserveOut
+    ) external pure returns (uint256) {
+        return
+            IUniswapV2Router(UNISWAP_V2_ROUTER).getAmountOut(
+                _amountIn,
+                _reserveIn,
+                _reserveOut
+            );
+    }
+
+    function getAmountInMax(
+        uint _amountOut,
+        uint _reserveIn,
+        uint _reserveOut
+    ) external pure returns (uint256) {
+        return
+            IUniswapV2Router(UNISWAP_V2_ROUTER).getAmountIn(
+                _amountOut,
+                _reserveIn,
+                _reserveOut
+            );
+    }
 }
