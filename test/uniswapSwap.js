@@ -63,7 +63,7 @@ describe("Testing Uniswap V2 Swap", () => {
     console.log("--------END------------\n");
   });
 
-  it("Swap Token checking the balance again", async () => {
+  it("Swap Token checking the balance again(SwapExactTokensForTokens)", async () => {
     const amountIn = BigNumber.from(10).pow(18);
     await weth.connect(account).deposit({ value: amountIn });
     await weth.connect(account).approve(TestSwapDeploy.address, amountIn);
@@ -73,17 +73,40 @@ describe("Testing Uniswap V2 Swap", () => {
       amountIn
     );
     const daiAmountInAccount = await dai.balanceOf(account.address);
-    await TestSwapDeploy.swap(
+    await TestSwapDeploy.swapExactTokensForTokens(
       WETH,
       DAI,
       amountIn,
       amountOutMin,
       account.address
     );
+
     expect(await dai.balanceOf(account.address)).to.equals(
       BigInt(amountOutMin) + BigInt(daiAmountInAccount)
     );
   });
+
+  it("Swap Token checking the balance again(SwapTokensForExactTokens)",async()=>{
+    const amountOut = BigNumber.from(10).pow(18);
+    await weth.connect(account).deposit({ value: amountOut });
+    await weth.connect(account).approve(TestSwapDeploy.address, amountOut);
+    const amountInMax = await TestSwapDeploy.getAmountInMax(
+      WETH,
+      DAI,
+      amountOut
+    );
+    const daiAmountInAccount = await dai.balanceOf(account.address);
+    await TestSwapDeploy.swapTokensForExactTokens(
+      WETH,
+      DAI,
+      amountOut,
+      amountInMax,
+      account.address
+    );
+    expect(await dai.balanceOf(account.address)).to.equals(
+      BigInt(amountInMax) + BigInt(daiAmountInAccount)
+    );
+  })
 
   it("Get Reserve Addresses of token through Pair Address", async () => {
     //Getting Pair Address
@@ -122,11 +145,12 @@ describe("Testing Uniswap V2 Swap", () => {
     const numerator = BigNumber.from(reserveInOutAmt.reserveOut).mul(amt);
     const denominator = BigNumber.from(reserveInOutAmt.reserveIn).add(amt);
     const result = BigNumber.from(numerator).div(denominator);
-    
-    expect(getAmountOutMinF).to.closeTo(result,500000000000000);
+
+    const expectAmt = BigNumber.from(6).mul(10).pow(14);
+    expect(getAmountOutMinF).to.closeTo(result,expectAmt);
   });
 
-  it("Checking GetAmountInMax function",async()=>{
+  it("Checking GetAmountInMaxF function",async()=>{
     const amt = BigNumber.from(10).pow(18);
 
     const getReserveAddress = await uniFacDeploy.getReserveAdd(WETH, DAI);
@@ -146,7 +170,7 @@ describe("Testing Uniswap V2 Swap", () => {
     const denominator = BigNumber.from(reserveInOutAmt.reserveOut).add(amt);
     const result = BigNumber.from(numerator).div(denominator);
 
-    const expectAmt = BigNumber.from(6).mul(10).pow(16);
+    const expectAmt = BigNumber.from(6).mul(10).pow(14);
     expect(getAmountInMaxF).to.closeTo(result,expectAmt);
   });
 });

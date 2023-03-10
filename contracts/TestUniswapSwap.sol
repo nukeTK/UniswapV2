@@ -1,7 +1,7 @@
 //SPDX-License-Identifier:MIT
 pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./interfaces/Uniswap.sol";
+import "./interfaces/IUniswap.sol";
 
 contract TestUniswapSwap {
     address private constant UNISWAP_V2_ROUTER =
@@ -10,11 +10,11 @@ contract TestUniswapSwap {
 
     receive() external payable {}
 
-    function swap(
+    function swapExactTokensForTokens(
         address _tokenIn,
         address _tokenOut,
         uint256 _amountIn,
-        uint256 _amountMinOut,
+        uint256 _amountOutMin,
         address _to
     ) external {
         IERC20(_tokenIn).transferFrom(msg.sender, address(this), _amountIn);
@@ -34,7 +34,38 @@ contract TestUniswapSwap {
         }
         IUniswapV2Router(UNISWAP_V2_ROUTER).swapExactTokensForTokens(
             _amountIn,
-            _amountMinOut,
+            _amountOutMin,
+            path,
+            _to,
+            block.timestamp
+        );
+    }
+
+    function swapTokensForExactTokens(
+        address _tokenIn,
+        address _tokenOut,
+        uint256 _amountOut,
+        uint256 _amountInMax,
+        address _to
+    ) external {
+        IERC20(_tokenIn).transferFrom(msg.sender, address(this), _amountOut);
+        IERC20(_tokenIn).approve(UNISWAP_V2_ROUTER, _amountOut);
+
+        address[] memory path;
+
+        if (WETH == _tokenIn || WETH == _tokenOut) {
+            path = new address[](2);
+            path[0] = _tokenIn;
+            path[1] = _tokenOut;
+        } else {
+            path = new address[](3);
+            path[0] = _tokenIn;
+            path[1] = WETH;
+            path[2] = _tokenOut;
+        }
+        IUniswapV2Router(UNISWAP_V2_ROUTER).swapTokensForExactTokens(
+            _amountOut,
+            _amountInMax,
             path,
             _to,
             block.timestamp
@@ -67,8 +98,9 @@ contract TestUniswapSwap {
             .getAmountsOut(_amountIn, path);
         return amountOutMins[path.length - 1];
     }
+
     //Minimum input token(without fee)
-    function getAmountInMin(
+    function getAmountInMax(
         address _tokenIn,
         address _tokenOut,
         uint256 _amountOut
@@ -91,7 +123,8 @@ contract TestUniswapSwap {
             .getAmountsIn(_amountOut, path);
         return amountInMax[path.length - 1];
     }
-    //Maximum Ouput, including reserve fees 
+
+    //Maximum Ouput, including reserve fees
     function getAmountOutMinF(
         uint _amountIn,
         uint _reserveIn,
@@ -104,7 +137,8 @@ contract TestUniswapSwap {
                 _reserveOut
             );
     }
-    //Minimum Input Token including reserve fees 
+
+    //Minimum Input Token including reserve fees
     function getAmountInMaxF(
         uint _amountOut,
         uint _reserveIn,

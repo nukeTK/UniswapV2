@@ -1,7 +1,7 @@
 //SPDX-License-Identifier:MIT
 pragma solidity ^0.8;
 
-import "./interfaces/Uniswap.sol";
+import "./interfaces/IUniswap.sol";
 
 contract TestUniswapFactory {
     address private constant UNISWAP_V2_FACTORY =
