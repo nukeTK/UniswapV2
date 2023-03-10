@@ -99,7 +99,7 @@ describe("Testing Uniswap V2 Swap", () => {
     expect(reserveInOut.reserveOut).to.not.eq(0);
   });
 
-  it("Checking GetAmountOutMax function", async () => {
+  it("Checking getAmountOutMinF function", async () => {
     const amt = BigNumber.from(10).pow(18);
 
     const getReserveAddress = await uniFacDeploy.getReserveAdd(WETH, DAI);
@@ -112,8 +112,8 @@ describe("Testing Uniswap V2 Swap", () => {
 
     expect(reserveInOutAmt.reserveIn).to.not.eq(0);
     expect(reserveInOutAmt.reserveOut).to.not.eq(0);
-        
-    const getAmountOutMax = await TestSwapDeploy.getAmountOutMax(
+
+    const getAmountOutMinF = await TestSwapDeploy.getAmountOutMinF(
       amt,
       reserveInOutAmt.reserveIn,
       reserveInOutAmt.reserveOut
@@ -123,6 +123,30 @@ describe("Testing Uniswap V2 Swap", () => {
     const denominator = BigNumber.from(reserveInOutAmt.reserveIn).add(amt);
     const result = BigNumber.from(numerator).div(denominator);
     
-    expect(getAmountOutMax).to.closeTo(result,400000000000000);
+    expect(getAmountOutMinF).to.closeTo(result,500000000000000);
+  });
+
+  it("Checking GetAmountInMax function",async()=>{
+    const amt = BigNumber.from(10).pow(18);
+
+    const getReserveAddress = await uniFacDeploy.getReserveAdd(WETH, DAI);
+
+    expect(getReserveAddress).to.not.eq(AddressZero);
+
+    await pairDeploy.setReserve(getReserveAddress);
+
+    const reserveInOutAmt = await pairDeploy.getReserves();
+
+    expect(reserveInOutAmt.reserveIn).to.not.eq(0);
+    expect(reserveInOutAmt.reserveOut).to.not.eq(0);
+
+    const getAmountInMaxF = await TestSwapDeploy.getAmountInMaxF(amt, reserveInOutAmt.reserveIn,reserveInOutAmt.reserveOut);
+
+    const numerator = BigNumber.from(reserveInOutAmt.reserveIn).mul(amt);
+    const denominator = BigNumber.from(reserveInOutAmt.reserveOut).add(amt);
+    const result = BigNumber.from(numerator).div(denominator);
+
+    const expectAmt = BigNumber.from(6).mul(10).pow(16);
+    expect(getAmountInMaxF).to.closeTo(result,expectAmt);
   });
 });

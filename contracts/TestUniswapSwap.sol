@@ -43,6 +43,7 @@ contract TestUniswapSwap {
 
     // **** LIBRARY FUNCTIONS ****
 
+    //Maximum output token(without fee)
     function getAmountOutMin(
         address _tokenIn,
         address _tokenOut,
@@ -66,7 +67,7 @@ contract TestUniswapSwap {
             .getAmountsOut(_amountIn, path);
         return amountOutMins[path.length - 1];
     }
-
+    //Minimum input token(without fee)
     function getAmountInMin(
         address _tokenIn,
         address _tokenOut,
@@ -90,8 +91,8 @@ contract TestUniswapSwap {
             .getAmountsIn(_amountOut, path);
         return amountInMax[path.length - 1];
     }
-
-    function getAmountOutMax(
+    //Maximum Ouput, including reserve fees 
+    function getAmountOutMinF(
         uint _amountIn,
         uint _reserveIn,
         uint _reserveOut
@@ -103,8 +104,8 @@ contract TestUniswapSwap {
                 _reserveOut
             );
     }
-
-    function getAmountInMax(
+    //Minimum Input Token including reserve fees 
+    function getAmountInMaxF(
         uint _amountOut,
         uint _reserveIn,
         uint _reserveOut
