@@ -15,7 +15,6 @@ interface IUniswapV2Callee {
 }
 
 contract TestUniswapFlashSwap is IUniswapV2Callee {
-    event Log(string message, uint256 val);
 
     // Uniswap V2 factory
     address private constant FACTORY =
